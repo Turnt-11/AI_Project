@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Loader2, LogIn, LogOut, Key } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 import SpaceBackground from './SpaceBackground';
+import AudioPlayer from './AudioPlayer';
+import LocationDisplay from './LocationDisplay';
 
 export default function Dashboard() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+  const [additionalData, setAdditionalData] = useState('');
   const queryClient = useQueryClient();
 
   const { data: session } = useQuery('session', async () => {
@@ -35,6 +38,20 @@ export default function Dashboard() {
       enabled: !!session?.user?.id,
     }
   );
+
+  useEffect(() => {
+    if (session) {
+      // Fetch additional data from the "/" endpoint
+      fetch('http://localhost:3000/')
+        .then((response) => response.text())
+        .then((data) => {
+          setAdditionalData(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching additional data:', error.message);
+        });
+    }
+  }, [session]);
 
   const validatePassword = (password: string) => {
     const hasUpperCase = /[A-Z]/.test(password);
@@ -290,6 +307,7 @@ export default function Dashboard() {
     <>
       <SpaceBackground />
       <div className="container mx-auto px-4 py-8 relative">
+       
         <div className="backdrop-blur-md bg-black/30 rounded-lg p-8 border border-white/10 shadow-xl">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold text-white">Dashboard</h1>
@@ -301,7 +319,11 @@ export default function Dashboard() {
               Sign Out
             </button>
           </div>
-          
+          <LocationDisplay />
+          <div className="text-white mb-4">
+            <h2 className="text-xl font-semibold">Additional Data:</h2>
+            <p>{additionalData}</p>
+          </div>
           {items && items.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {items.map((item: any) => (
@@ -318,6 +340,7 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+      <AudioPlayer />
     </>
   );
 }

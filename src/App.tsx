@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider, useQueryClient } from 'react-query';
 import { Toaster } from 'react-hot-toast';
 import Dashboard from './components/Dashboard';
 import { supabase } from './lib/supabase';
+import AudioPlayer from './components/AudioPlayer';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,6 +40,7 @@ function AppContent() {
     <div className="min-h-screen bg-transparent">
       <Dashboard />
       <Toaster position="bottom-right" />
+      <AudioPlayer />
     </div>
   );
 }
