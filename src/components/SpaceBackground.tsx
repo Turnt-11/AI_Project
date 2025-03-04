@@ -2,10 +2,10 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import Earth from './Earth';
 import MatrixRain from './MatrixRain';
-import { useRef } from 'react';
+import { useRef, memo } from 'react';
 
 function AnimatedStars() {
-  const starsRef = useRef();
+  const starsRef = useRef<any>();
 
   useFrame(({ clock }) => {
     const elapsedTime = clock.getElapsedTime();
@@ -29,7 +29,7 @@ function AnimatedStars() {
   );
 }
 
-export default function SpaceBackground() {
+const SpaceBackground = memo(() => {
   return (
     <div className="fixed inset-0 -z-10 bg-black">
       <div className="absolute inset-0 z-0">
@@ -82,4 +82,8 @@ export default function SpaceBackground() {
       </style>
     </div>
   );
-}
+});
+
+SpaceBackground.displayName = 'SpaceBackground';
+
+export default SpaceBackground;

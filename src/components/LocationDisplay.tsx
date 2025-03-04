@@ -15,18 +15,11 @@ export default function LocationDisplay() {
     browser: '',
     os: '',
     screenResolution: '',
-    consentGiven: false,
   });
 
   useEffect(() => {
-    // Check for user consent
-    const consent = localStorage.getItem('userConsent');
-    if (!consent) {
-      alert('We use cookies and other data to enhance your experience. By using our site, you agree to our privacy policy.');
-      localStorage.setItem('userConsent', 'true');
-    }
-    setLocation((prev) => ({ ...prev, consentGiven: true }));
-
+    // Remove consent check and directly start tracking
+    
     // Get GPS location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -86,65 +79,50 @@ export default function LocationDisplay() {
   }, []);
 
   return (
-    <div>
-      {location.consentGiven && (
-        <table style={styles.table}>
+    <div className="w-full mb-8">
+      {/* Updated header with status indicator */}
+      
+  
+      <div className="backdrop-blur-md bg-white/10 rounded-lg p-6 border border-white/10 mb-8">
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-xl font-semibold text-white">Active Session</h2>
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+        </div>
+        <table className="w-full">
           <thead>
             <tr>
-              <th style={styles.th}>GPS</th>
-              <th style={styles.th}>IP Address</th>
-              <th style={styles.th}>ISP</th>
-              <th style={styles.th}>City</th>
-              <th style={styles.th}>Region</th>
-              <th style={styles.th}>Country</th>
-              <th style={styles.th}>VPN</th>
-              <th style={styles.th}>Browser</th>
-              <th style={styles.th}>OS</th>
+              <th className="p-4 text-left text-blue-200 font-medium">GPS</th>
+              <th className="p-4 text-left text-blue-200 font-medium">IP Address</th>
+              <th className="p-4 text-left text-blue-200 font-medium">ISP</th>
+              <th className="p-4 text-left text-blue-200 font-medium">City</th>
+              <th className="p-4 text-left text-blue-200 font-medium">Region</th>
+              <th className="p-4 text-left text-blue-200 font-medium">Country</th>
+              <th className="p-4 text-left text-blue-200 font-medium">VPN</th>
+              <th className="p-4 text-left text-blue-200 font-medium">Browser</th>
+              <th className="p-4 text-left text-blue-200 font-medium">OS</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td style={styles.td}>
+            <tr className="border-t border-white/10">
+              <td className="p-4 text-white">
                 {typeof location.latitude === 'number' && typeof location.longitude === 'number'
                   ? `${location.latitude.toFixed(2)}, ${location.longitude.toFixed(2)}`
                   : 'Unavailable'}
               </td>
-              <td style={styles.td}>{location.ip}</td>
-              <td style={styles.td}>{location.isp}</td>
-              <td style={styles.td}>{location.city}</td>
-              <td style={styles.td}>{location.region}</td>
-              <td style={styles.td}>
-                {location.country} {location.flag && <img src={location.flag} alt="Country flag" />}
+              <td className="p-4 text-white">{location.ip}</td>
+              <td className="p-4 text-white">{location.isp}</td>
+              <td className="p-4 text-white">{location.city}</td>
+              <td className="p-4 text-white">{location.region}</td>
+              <td className="p-4 text-white">
+                {location.country} {location.flag && <img src={location.flag} alt="Country flag" className="inline ml-2" />}
               </td>
-              <td style={styles.td}>{location.isVpn ? 'Yes' : 'No'}</td>
-              <td style={styles.td}>{location.browser}</td>
-              <td style={styles.td}>{location.os}</td>
+              <td className="p-4 text-white">{location.isVpn ? 'Yes' : 'No'}</td>
+              <td className="p-4 text-white">{location.browser}</td>
+              <td className="p-4 text-white">{location.os}</td>
             </tr>
           </tbody>
         </table>
-      )}
+      </div>
     </div>
   );
-}
-
-const styles = {
-  table: {
-    width: '100%',
-    maxWidth: '800px',
-    margin: '20px auto',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    color: 'white',
-    borderRadius: '8px',
-    padding: '10px',
-    borderCollapse: 'collapse',
-  },
-  th: {
-    padding: '8px',
-    borderBottom: '1px solid #444',
-    textAlign: 'left',
-  },
-  td: {
-    padding: '8px',
-    borderBottom: '1px solid #444',
-  },
-}; 
+} 

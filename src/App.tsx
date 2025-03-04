@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import LandingPage from './components/LandingPage';
+import LoginForm from './components/LoginForm';
+import Dashboard from './components/Dashboard';
 import { QueryClient, QueryClientProvider, useQueryClient } from 'react-query';
 import { Toaster } from 'react-hot-toast';
-import Dashboard from './components/Dashboard';
-import { supabase } from './lib/supabase';
 import AudioPlayer from './components/AudioPlayer';
 
 const queryClient = new QueryClient({
@@ -14,35 +15,16 @@ const queryClient = new QueryClient({
   },
 });
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppContent />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/auth" element={<LoginForm />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+      <Toaster position="bottom-right" />
+      <AudioPlayer />
     </QueryClientProvider>
   );
 }
-
-function AppContent() {
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      queryClient.setQueryData('session', session);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [queryClient]);
-
-  return (
-    <div className="min-h-screen bg-transparent">
-      <Dashboard />
-      <Toaster position="bottom-right" />
-      <AudioPlayer />
-    </div>
-  );
-}
-
-export default App;

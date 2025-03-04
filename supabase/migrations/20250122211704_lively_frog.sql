@@ -19,18 +19,26 @@ CREATE TABLE IF NOT EXISTS profiles (
   id uuid PRIMARY KEY REFERENCES auth.users(id),
   email text UNIQUE NOT NULL,
   created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
+  updated_at timestamptz DEFAULT now(),
+  role text DEFAULT 'user'
 );
 
 -- Enable RLS
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
 -- Create policies
+DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
 CREATE POLICY "Users can view own profile"
   ON profiles
   FOR SELECT
   TO authenticated
   USING (auth.uid() = id);
+
+CREATE POLICY "Admins can view admin dashboard"
+  ON profiles
+  FOR SELECT
+  TO authenticated
+  USING (auth.uid() = id AND role = 'admin');
 
 -- Create a trigger to automatically create a profile on user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()

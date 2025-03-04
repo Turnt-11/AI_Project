@@ -11,7 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.48.1",
+    "dotenv": "^16.4.7",
     "express": "^4.17.1",
-    "ipinfo-express": "^1.1.0"
+    "ipinfo-express": "^1.1.0",
+    "puppeteer": "^21.11.0"
   }
 }

@@ -1,51 +1,25 @@
-import { useState, useRef } from 'react';
+import React, { useCallback } from 'react';
+import { useAudio } from '../context/AudioContext';
 
 export default function AudioPlayer() {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [isMuted, setIsMuted] = useState(false);
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !audioRef.current.muted;
-      setIsMuted(audioRef.current.muted);
-    }
-  };
-
-  const playAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.play();
-    }
-  };
+  const { isPlaying, togglePlay } = useAudio();
+  
+  // Create hover sound effect
+  const playHoverSound = useCallback(() => {
+    const hoverSound = new Audio('/sounds/hover.mp3'); // You'll need to create this sound
+    hoverSound.volume = 0.2; // Subtle volume
+    hoverSound.play();
+  }, []);
 
   return (
-    <div style={styles.container}>
-      <audio ref={audioRef} src="/EvilThemed.mp3" loop />
-      <button onClick={playAudio} style={styles.button}>
-        Play
-      </button>
-      <button onClick={toggleMute} style={styles.button}>
-        {isMuted ? '🔇' : '🔊'}
+    <div className="fixed bottom-0 left-0 p-4 z-50">
+      <button
+        onClick={togglePlay}
+        onMouseEnter={playHoverSound}
+        className="p-2 rounded-full bg-green-600/80 text-white hover:bg-green-700/80 transition-colors"
+      >
+        {isPlaying ? 'Pause' : 'Play'}
       </button>
     </div>
   );
-}
-
-const styles = {
-  container: {
-    position: 'fixed',
-    bottom: '10px',
-    left: '10px',
-    zIndex: 1000,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: '50%',
-    padding: '10px',
-  },
-  button: {
-    background: 'none',
-    border: 'none',
-    color: 'white',
-    fontSize: '24px',
-    cursor: 'pointer',
-    marginRight: '5px',
-  },
-}; 
+} 

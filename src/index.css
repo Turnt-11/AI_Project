@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.body {
+    font-family: 'Courier New', Courier, monospace;
+}
+.activeSession {
+    color:white;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    background-color: #55ff0015;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    width: 100%;
+    box-sizing: border-box;
+}
