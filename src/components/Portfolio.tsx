@@ -525,7 +525,7 @@ export default function Portfolio() {
             <h2 className="text-3xl font-bold text-cyan-300 mb-8">Get in Touch</h2>
             
             {/* Social Links - Only LinkedIn */}
-            <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto mb-12">
+            <div className="w-full mb-12">
               <a
                 href="https://www.linkedin.com/in/kyle-michael-brown/"
                 target="_blank"
@@ -550,7 +550,10 @@ export default function Portfolio() {
             </p>
 
             {/* Contact Form */}
-            <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
+            <form 
+              onSubmit={handleSubmit}
+              className="w-full bg-black/30 backdrop-blur-sm rounded-xl p-8 border border-purple-500/10"
+            >
               <div>
                 <label className="block text-cyan-300 mb-2">Name</label>
                 <input
