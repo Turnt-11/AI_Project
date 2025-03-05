@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useQuery } from 'react-query';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabaseClient';
 import { useLocation } from 'react-router-dom';
 
 export default function AnalyticsTracker() {
@@ -90,4 +90,29 @@ export default function AnalyticsTracker() {
   }, [session?.user?.id]);
 
   return null;
-} 
+}
+
+// Add this utility function to throttle animations
+export const throttleRAF = (callback: FrameRequestCallback): () => void => {
+  let rafId: number | null = null;
+  let lastTime = 0;
+  
+  // Aim for 30fps instead of 60fps for less intensive animations
+  const interval = 1000 / 30; 
+  
+  const animate = (time: number) => {
+    if (time - lastTime >= interval) {
+      lastTime = time;
+      callback(time);
+    }
+    rafId = requestAnimationFrame(animate);
+  };
+  
+  rafId = requestAnimationFrame(animate);
+  
+  return () => {
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+    }
+  };
+}; 

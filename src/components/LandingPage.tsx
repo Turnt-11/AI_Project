@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SpaceBackground from './SpaceBackground';
 import Portfolio from './Portfolio';
 import AudioPlayer from './AudioPlayer';
+import { supabase } from '../lib/supabase';
 
 export default function LandingPage() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
+  
+  useEffect(() => {
+    // Check auth in background
+    supabase.auth.getSession().then(() => {
+      setAuthChecked(true);
+    });
+    
+    // Set loading to false after a short delay to ensure initial content renders
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500); // Short delay to ensure content is ready
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
   return (
     <div className="min-h-screen flex flex-col relative">
       {/* Background */}
@@ -24,7 +42,13 @@ export default function LandingPage() {
       
       {/* Content Layer */}
       <div className="relative z-20">
-        <Portfolio />
+        {isLoading ? (
+          <div className="flex items-center justify-center h-screen">
+            <div className="text-xl text-white">Loading amazing content...</div>
+          </div>
+        ) : (
+          <Portfolio />
+        )}
       </div>
 
       <AudioPlayer />

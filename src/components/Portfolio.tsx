@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Image as ImageIcon, Code, Kanban } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
+import { throttleRAF } from './AnalyticsTracker';
 
 interface PortfolioItem {
   id: string;
@@ -206,7 +207,7 @@ const portfolioItems: PortfolioItem[] = [
     title: 'HTML, CSS, and Javascript for Web Developers',
     description: 'This course covered the fundamentals of web development using HTML, CSS, and JavaScript. It began with HTML and CSS, teaching how to structure and style modern web pages. I also learned about responsive design, ensuring web pages adapt to different screen sizes without requiring manual zooming. The course then introduced JavaScript, focusing on how to create interactive web applications. Finally, I explored Ajax, which allows web pages to fetch and display data dynamically from a server without needing a full reload. By the end, I gained the skills to build functional, responsive, and interactive web applications.',
     type: 'certification',
-    iconUrl: '/logos/HTML-CSS-JS.png',
+    iconUrl: '/logos/HTML-CSS-JS.webp',
     certificateUrl: 'https://coursera.org/share/e7c8fbf4d84c9758a0caaad524347984'
   },
   {
@@ -224,7 +225,7 @@ const portfolioItems: PortfolioItem[] = [
         'services using RESTful APIs. The certificate holder should be ready to ' +
         'take on the chalenges of an entry-level front end developer role.',
     type: 'certification',
-    iconUrl: '/logos/IBM-Front-End-Developer.png',
+    iconUrl: '/logos/IBM-Front-End-Developer.webp',
     certificateUrl: 'https://coursera.org/share/1e0ba2ed74f189b62a32520e8372dee8'
   },
   {
@@ -244,7 +245,7 @@ const portfolioItems: PortfolioItem[] = [
         'tools for Automation, Continuous Integration (CI) and Continuous ' +
         'Development (CD)',
     type: 'certification',
-    iconUrl: '/logos/IBM-Devops-Engineering.png',
+    iconUrl: '/logos/IBM-Devops-Engineering.webp',
     certificateUrl: 'https://coursera.org/share/9ac7a487ffd6fc58564d9669699c9f42'
   },
   {
@@ -263,7 +264,7 @@ const portfolioItems: PortfolioItem[] = [
       'security. The completers of the Professional Certificate are now ready ' +
       'to take on Software Engineering challenges using a DevOps mindset.',
     type: 'certification',
-    iconUrl: '/logos/IBM-Applied-DevOps.png',
+    iconUrl: '/logos/IBM-Applied-DevOps.webp',
     certificateUrl: 'https://coursera.org/share/7991b45a16a4639077b436a3205afd73'
   },
 ];
@@ -324,6 +325,7 @@ export default function Portfolio() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   const container = {
     hidden: { opacity: 0 },
@@ -429,45 +431,47 @@ export default function Portfolio() {
       case 'Bio':
         return (
           <motion.div
-            variants={item}
-            initial="hidden"
-            animate="show"
+            initial={false}
+            animate={{ opacity: 1 }}
             className="p-8 rounded-xl bg-black/40 backdrop-blur-sm border border-purple-500/20"
           >
-            <h2 className="text-3xl font-bold text-cyan-300 mb-4">About Me</h2>
-            <p className="text-lg text-purple-200 leading-relaxed">
-              {titleTyping.displayedText}
-              <span className={titleTyping.isComplete ? "hidden" : "inline-block w-1 h-5 ml-1 bg-purple-300 animate-blink"}></span>
-            </p>
-            
-            <p className="text-lg text-purple-200 leading-relaxed mt-4">
-              {paragraph1Typing.displayedText}
-              {titleTyping.isComplete && !paragraph1Typing.isComplete && (
-                <span className="inline-block w-1 h-5 ml-1 bg-purple-300 animate-blink"></span>
-              )}
-            </p>
-            
-            <p className="text-lg text-purple-200 leading-relaxed mt-4">
-              {paragraph2Typing.displayedText}
-              {paragraph1Typing.isComplete && !paragraph2Typing.isComplete && (
-                <span className="inline-block w-1 h-5 ml-1 bg-purple-300 animate-blink"></span>
-              )}
-            </p>
-            
-            <p className="text-lg text-purple-200 leading-relaxed mt-4">
-              {paragraph3Typing.displayedText}
-              {paragraph2Typing.isComplete && !paragraph3Typing.isComplete && (
-                <span className="inline-block w-1 h-5 ml-1 bg-purple-300 animate-blink"></span>
-              )}
-            </p>
+            <h2 className="text-3xl font-bold text-cyan-300 mb-8">About Me</h2>
+            <div className="text-purple-200/90 space-y-4">
+  <p>
+    I am a results-driven Full Stack Software Developer with expertise in React.js, Express.js, MongoDB, and cloud-native technologies. My journey in web development began in 2012 with static HTML, CSS, and JavaScript, gradually evolving into dynamic applications using jQuery, Bootstrap, and PHP/MySQL for CMS development. Over the years, I have built secure, high-performance, and scalable web applications, emphasizing DevOps practices, automation, and AI-driven development.
+  </p>
+  <p>
+    I specialize in designing and developing full-stack applications that seamlessly integrate front-end frameworks like React.js with backend services powered by Node.js, Express.js, and MongoDB. Additionally, I have experience working with C# and ASP.NET, contributing to projects such as visitor and contractor check-in systems utilizing badge-scanning functionality. My background includes esports CMS development, sensor data integration, and leveraging APIs and microservices to enhance user interaction and system efficiency.
+  </p>
+  <p>
+    Beyond software development, I am continuously expanding my expertise in DevOps and cybersecurity. I have earned multiple certifications, including:
+  </p>
+  <ul className="list-disc pl-6 space-y-2">
+    <li>
+      <strong>Front-End Development Certificate</strong> – Proficient in HTML, CSS, JavaScript, UI/UX best practices, GitHub version control, React.js, RESTful APIs, testing, debugging, and deploying applications.
+    </li>
+    <li>
+      <strong>Web Development Fundamentals Course</strong> – Solid foundation in responsive design, JavaScript interactivity, and Ajax for dynamic data handling.
+    </li>
+    <li>
+      <strong>DevOps Practitioner Certificate</strong> – Hands-on experience with Agile, Scrum, Python, shell scripting, microservices, Docker, Kubernetes, OpenShift, CI/CD, and cloud-native technologies.
+    </li>
+    <li>
+      <strong>Advanced DevOps Certificate</strong> – In-depth knowledge of TDD, CI/CD pipelines (GitHub Actions, Tekton), monitoring, logging, observability, and security best practices.
+    </li>
+  </ul>
+  <p>
+    I am also strengthening my expertise in cybersecurity and web penetration testing to become a more well-rounded full-stack developer. This includes mastering security best practices, vulnerability assessment, ethical hacking techniques, and implementing robust security measures in web applications. By understanding potential threats and developing proactive defense strategies, I build more secure, resilient, and attack-resistant applications from the ground up.
+  </p>
+</div>
+
           </motion.div>
         );
       case 'Websites':
         return (
           <motion.div 
-            variants={container}
-            initial="hidden"
-            animate="show"
+            initial={false}
+            animate={{ opacity: 1 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {portfolioItems.filter(item => item.type === 'website').map((item) => (
@@ -478,9 +482,8 @@ export default function Portfolio() {
       case 'Languages':
         return (
           <motion.div 
-            variants={container}
-            initial="hidden"
-            animate="show"
+            initial={false}
+            animate={{ opacity: 1 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {portfolioItems.filter(item => item.type === 'language').map((item) => (
@@ -491,9 +494,8 @@ export default function Portfolio() {
       case 'Tools':
         return (
           <motion.div 
-            variants={container}
-            initial="hidden"
-            animate="show"
+            initial={false}
+            animate={{ opacity: 1 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {portfolioItems.filter(item => item.type === 'tool').map((item) => (
@@ -504,9 +506,8 @@ export default function Portfolio() {
       case 'Certifications':
         return (
           <motion.div 
-            variants={container}
-            initial="hidden"
-            animate="show"
+            initial={false}
+            animate={{ opacity: 1 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {portfolioItems.filter(item => item.type === 'certification').map((item) => (
@@ -517,9 +518,8 @@ export default function Portfolio() {
       case 'Contact':
         return (
           <motion.div
-            variants={item}
-            initial="hidden"
-            animate="show"
+            initial={false}
+            animate={{ opacity: 1 }}
             className="p-8 rounded-xl bg-black/40 backdrop-blur-sm border border-purple-500/20"
           >
             <h2 className="text-3xl font-bold text-cyan-300 mb-8">Get in Touch</h2>
@@ -613,6 +613,52 @@ export default function Portfolio() {
     }
   };
 
+  useEffect(() => {
+    // Preload critical images
+    const imagesToPreload = portfolioItems
+      .filter(item => item.type === 'certification' || item.type === 'tool')
+      .map(item => item.iconUrl)
+      .filter(Boolean) as string[];
+      
+    let loadedCount = 0;
+    const totalImages = imagesToPreload.length;
+    
+    imagesToPreload.forEach(src => {
+      const img = new Image();
+      img.onload = () => {
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true);
+        }
+      };
+      img.onerror = () => {
+        console.warn(`Failed to preload image: ${src}`);
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true);
+        }
+      };
+      img.src = src;
+    });
+    
+    // If no images to preload, set as loaded
+    if (totalImages === 0) {
+      setImagesLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Set a flag in localStorage to indicate this is not the first visit
+    // This can help with optimizing animations on return visits
+    localStorage.setItem('visited', 'true');
+    
+    // Force a repaint to help with initial rendering
+    document.body.style.display = 'none';
+    document.body.offsetHeight; // Force a repaint
+    document.body.style.display = '';
+    
+  }, []);
+
   return (
     <div className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 z-10">
       <div className="max-w-7xl mx-auto">
@@ -625,9 +671,6 @@ export default function Portfolio() {
           <h1 className="text-5xl md:text-6xl font-bold text-cyan-300 mb-6">
             Kyle's Portfolio
           </h1>
-          <p className="text-xl text-purple-300/90 max-w-2xl mx-auto">
-            Showcasing my work in web development, video content, and graphic design.
-          </p>
         </motion.div>
 
         {/* Tabs */}
@@ -713,9 +756,9 @@ function PortfolioCard({
       {/* Image Section for websites */}
       {item.type === 'website' && item.imageUrls && item.imageUrls.length > 0 && (
         <div className="relative w-full h-0 pb-[56.25%] overflow-hidden">
-          <img
+        <img
             src={item.imageUrls[currentImageIndex]}
-            alt={item.title}
+          alt={item.title}
             className="absolute top-0 left-0 w-full h-full object-contain bg-black/50 rounded-t-xl"
             onError={(e) => {
               console.error(`Failed to load image: ${item.imageUrls?.[currentImageIndex]}`);
@@ -770,8 +813,8 @@ function PortfolioCard({
               console.error(`Failed to load certificate image: ${item.iconUrl}`);
               e.currentTarget.src = '/img/placeholder.png'; // Fallback image
             }}
-          />
-        </div>
+        />
+      </div>
       )}
       
       {/* Content Section */}
@@ -794,7 +837,7 @@ function PortfolioCard({
 
         {/* Description with Show More/Less button for certifications */}
         <div>
-          <p className="text-purple-200/90 text-sm">
+        <p className="text-purple-200/90 text-sm">
             {item.type === 'certification' && needsTruncation 
               ? (showFullDescription ? item.description : truncatedDescription)
               : item.description
@@ -831,7 +874,7 @@ function PortfolioCard({
 
         {/* View Certificate button - For certification items only */}
         {item.type === 'certification' && (
-          <div className="flex items-center space-x-4 pt-4">
+        <div className="flex items-center space-x-4 pt-4">
             <a
               href={item.certificateUrl}
               target="_blank"
