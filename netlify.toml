@@ -1,4 +1,4 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; base-uri 'self'; script-src 'self' 'strict-dynamic' 'unsafe-inline' https: http:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co https://*.supabase.in; font-src 'self' data:;" 
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; script-src 'self' 'strict-dynamic' 'unsafe-inline' https: http:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co https://*.supabase.in; font-src 'self' data:; object-src 'none'; require-trusted-types-for 'script';" 

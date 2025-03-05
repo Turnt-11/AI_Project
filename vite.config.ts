@@ -28,11 +28,13 @@ export default defineConfig({
       'Content-Security-Policy': `
         default-src 'self'; 
         base-uri 'self'; 
-        script-src 'self' 'nonce-${cspNonce}' 'strict-dynamic' 'unsafe-inline' https: http:; 
+        script-src 'self' 'nonce-${cspNonce}' 'strict-dynamic'; 
         style-src 'self' 'unsafe-inline'; 
         img-src 'self' data: https:; 
         connect-src 'self' https://*.supabase.co https://*.supabase.in; 
         font-src 'self' data:;
+        object-src 'none';
+        require-trusted-types-for 'script';
       `.replace(/\s+/g, ' ').trim()
     }
   }
